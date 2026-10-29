@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Employee Management System - Auspify Internship Task 4">
+  <title>Employify | Employee Management</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar">
+      <a class="brand" href="#">
+        <span class="brand-icon">E</span>
+        <span>Employify</span>
+      </a>
+
+      <p class="menu-title">WORKSPACE</p>
+      <nav>
+        <a class="nav-link active" href="#dashboard">▦ Dashboard</a>
+        <a class="nav-link" href="#employees">♙ Employees</a>
+        <a class="nav-link" href="#departments">▤ Departments</a>
+        <a class="nav-link" href="#reports">▥ Reports</a>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <div class="help-card">
+          <strong>Need help?</strong>
+          <p>Manage your team with ease.</p>
+        </div>
+        <div class="profile">
+          <div class="profile-avatar">SM</div>
+          <div><strong>Sanket Misal</strong><small>Administrator</small></div>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main-content" id="dashboard">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">WORKSPACE / OVERVIEW</p>
+          <h1>Employee Dashboard</h1>
+          <p class="subtitle">Here's what's happening with your team today.</p>
+        </div>
+        <div class="top-actions">
+          <span class="date-pill" id="todayLabel"></span>
+          <button class="btn btn-primary" id="addEmployeeBtn">＋ Add Employee</button>
+        </div>
+      </header>
+
+      <section class="stats-grid">
+        <article class="stat-card">
+          <div class="stat-label">Total Employees <span class="stat-icon purple">♙</span></div>
+          <strong id="totalEmployees">0</strong>
+          <small>All employee records</small>
+        </article>
+        <article class="stat-card">
+          <div class="stat-label">Active Employees <span class="stat-icon green">✓</span></div>
+          <strong id="activeEmployees">0</strong>
+          <small>Currently working</small>
+        </article>
+        <article class="stat-card">
+          <div class="stat-label">Departments <span class="stat-icon blue">▦</span></div>
+          <strong id="totalDepartments">0</strong>
+          <small>Departments represented</small>
+        </article>
+        <article class="stat-card">
+          <div class="stat-label">On Leave <span class="stat-icon orange">◷</span></div>
+          <strong id="leaveEmployees">0</strong>
+          <small>Employees on leave</small>
+        </article>
+      </section>
+
+      <section class="panel" id="employees">
+        <div class="panel-heading">
+          <div>
+            <h2>Employee Directory</h2>
+            <p>View, manage and organize your employees.</p>
+          </div>
+          <button class="btn btn-outline" id="exportBtn">⇩ Export CSV</button>
+        </div>
+
+        <div class="toolbar">
+          <input id="searchInput" type="search" placeholder="Search name, email, role...">
+          <select id="departmentFilter">
+            <option value="">All Departments</option>
+          </select>
+          <select id="statusFilter">
+            <option value="">All Statuses</option>
+            <option value="Active">Active</option>
+            <option value="On Leave">On Leave</option>
+            <option value="Inactive">Inactive</option>
+          </select>
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>EMPLOYEE</th>
+                <th>DEPARTMENT</th>
+                <th>POSITION</th>
+                <th>JOINING DATE</th>
+                <th>STATUS</th>
+                <th>ACTIONS</th>
+              </tr>
+            </thead>
+            <tbody id="employeeTableBody"></tbody>
+          </table>
+          <div id="emptyState" class="empty-state">
+            <div class="empty-icon">♙</div>
+            <h3>No employees found</h3>
+            <p>Add your first employee or change the search filters.</p>
+            <button class="btn btn-primary" id="emptyAddBtn">＋ Add Employee</button>
+          </div>
+        </div>
+
+        <div class="table-footer">
+          <span id="tableCount">0 employees</span>
+          <span>Data saved in this browser</span>
+        </div>
+      </section>
+
+      <section class="lower-grid">
+        <section class="panel" id="departments">
+          <div class="panel-heading">
+            <div>
+              <h2>Department Overview</h2>
+              <p>Employee distribution by department.</p>
+            </div>
+          </div>
+          <div id="departmentOverview" class="department-grid"></div>
+        </section>
+
+        <section class="panel" id="reports">
+          <div class="panel-heading">
+            <div>
+              <h2>Quick Report</h2>
+              <p>Current workforce summary.</p>
+            </div>
+          </div>
+          <div class="report-list">
+            <div><span class="dot green-dot"></span>Active employees<strong id="reportActive">0</strong></div>
+            <div><span class="dot red-dot"></span>Inactive employees<strong id="reportInactive">0</strong></div>
+            <div><span class="dot blue-dot"></span>Total records<strong id="reportTotal">0</strong></div>
+          </div>
+          <p class="report-note">Tip: Export CSV to save a copy of the employee report.</p>
+        </section>
+      </section>
+
+      <footer>Employify · Auspify Technologies Internship · Task 4</footer>
+    </main>
+  </div>
+
+  <!-- Add/Edit Employee Modal -->
+  <div class="modal-backdrop" id="employeeModal" role="dialog"
+       aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal">
+      <div class="modal-heading">
+        <div>
+          <p class="eyebrow">EMPLOYEE RECORD</p>
+          <h2 id="modalTitle">Add Employee</h2>
+          <p>Enter employee information below.</p>
+        </div>
+        <button class="close-btn" id="closeModalBtn" type="button" aria-label="Close">×</button>
+      </div>
+
+      <form id="employeeForm">
+        <div class="form-grid">
+          <label class="field full-width">
+            Full Name *
+            <input id="employeeName" type="text" maxlength="80" placeholder="e.g. Priya Sharma" required>
+          </label>
+
+          <label class="field">
+            Email Address *
+            <input id="employeeEmail" type="email" maxlength="120" placeholder="name@company.com" required>
+          </label>
+
+          <label class="field">
+            Phone Number
+            <input id="employeePhone" type="tel" maxlength="20" placeholder="+91 98765 43210">
+          </label>
+
+          <label class="field">
+            Department *
+            <select id="employeeDepartment" required>
+              <option value="">Select Department</option>
+              <option value="IT">IT</option>
+              <option value="HR">HR</option>
+              <option value="Finance">Finance</option>
+              <option value="Marketing">Marketing</option>
+              <option value="Sales">Sales</option>
+              <option value="Operations">Operations</option>
+            </select>
+          </label>
+
+          <label class="field">
+            Position / Role *
+            <input id="employeePosition" type="text" maxlength="80" placeholder="Software Developer" required>
+          </label>
+
+          <label class="field">
+            Joining Date *
+            <input id="employeeJoiningDate" type="date" required>
+          </label>
+
+          <label class="field">
+            Employment Status *
+            <select id="employeeStatus" required>
+              <option value="Active">Active</option>
+              <option value="On Leave">On Leave</option>
+              <option value="Inactive">Inactive</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn btn-outline" id="cancelBtn" type="button">Cancel</button>
+          <button class="btn btn-primary" id="saveEmployeeBtn" type="submit">Save Employee</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
